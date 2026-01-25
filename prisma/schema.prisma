@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String   @unique
+  role      String   @default("member")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  author    String
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Benefit {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  assetId   Int?     @unique
+  createdAt DateTime @default(now())
+  asset     Image?   @relation("benefitImage", fields: [assetId], references: [id])
+}
+
+model Service {
+  id        Int      @id @default(autoincrement())
+  title     String
+  teaser    String
+  content   String
+  assetId   Int?     @unique
+  iconId    Int?     @unique
+  createdAt DateTime @default(now())
+  asset     Image?   @relation("serviceImage", fields: [assetId], references: [id])
+  icon      Icon?    @relation("serviceIcon", fields: [iconId], references: [id])
+}
+
+model Membership {
+  id         Int         @id @default(autoincrement())
+  title      String
+  price      Float
+  content    String
+  advantages Advantage[]
+  createdAt  DateTime    @default(now())
+}
+
+model Advantage {
+  id           Int        @id @default(autoincrement())
+  description  String
+  createdAt    DateTime   @default(now())
+  membership   Membership @relation(fields: [membershipId], references: [id])
+  membershipId Int
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Employee {
+  id        Int      @id @default(autoincrement())
+  name      String
+  area      String
+  assetId   Int?     @unique
+  createdAt DateTime @default(now())
+  asset     Image?   @relation("employeeImage", fields: [assetId], references: [id])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  teaser    String
+  content   String
+  author    String   @default("Admin")
+  assetId   Int?     @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  asset     Image?   @relation("postImage", fields: [assetId], references: [id])
+}
+
+model Excercise {
+  id        Int      @id @default(autoincrement())
+  title     String
+  teaser    String
+  content   String
+  assetId   Int?     @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  asset     Image?   @relation("excerciseImage", fields: [assetId], references: [id])
+}
+
+model Workout {
+  id        Int      @id @default(autoincrement())
+  title     String
+  weekday   String
+  time      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Image {
+  id        Int        @id @default(autoincrement())
+  url       String
+  altText   String
+  width     Int
+  height    Int
+  createdAt DateTime   @default(now())
+  benefit   Benefit?   @relation("benefitImage")
+  service   Service?   @relation("serviceImage")
+  employee  Employee?  @relation("employeeImage")
+  post      Post?      @relation("postImage")
+  excercise Excercise? @relation("excerciseImage")
+}
+
+model Icon {
+  id        Int      @id @default(autoincrement())
+  url       String
+  altText   String
+  width     Int
+  height    Int
+  createdAt DateTime @default(now())
+  service   Service? @relation("serviceIcon")
+}
