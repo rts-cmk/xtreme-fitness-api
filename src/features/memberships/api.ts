@@ -5,7 +5,8 @@ import { membershipSchema, type NewMembership } from "./validation";
 import {
   createMembership,
   getAllMemberships,
-  deleteMembership
+  deleteMembership,
+  updateMembership
 } from "./services";
 
 const memberships = new Hono();
@@ -39,6 +40,32 @@ memberships.post("/",
     }, 201);
   }
 );
+
+memberships.put("/:id", 
+  zValidator('json', membershipSchema, (result, c) => {
+    if (!result.success) {
+      const validationError = result.error as z.ZodError<NewMembership>;
+      const errorTree = z.treeifyError(validationError);
+      return c.json({ 
+        success: false,
+        error: "VALIDATION ERROR",
+        message: "Invalid membership payload",
+        data: errorTree
+     }, 400);
+    }   
+  }),
+  async (c) => {
+    const id = Number(c.req.param("id"));
+    const body = await c.req.valid("json");
+    const updatedMembership = await updateMembership(id, body);
+    return c.json({ 
+      success: true, 
+      message: "Membership updated", 
+      data: updatedMembership 
+    }, 200);
+  }
+);
+
 
 
 memberships.delete("/", async (c) => {

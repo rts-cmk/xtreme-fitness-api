@@ -15,3 +15,7 @@ export async function createAsset (data: NewAsset) {
     const newAsset = await prisma.image.create({ data: assetData });
     return newAsset;
 }
+
+export async function deleteAsset(id: number) {
+    return prisma.image.delete({ where: { id } });
+}

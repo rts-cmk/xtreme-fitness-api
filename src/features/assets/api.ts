@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { z } from "zod"; // <-- needed to detect ZodError
 import { zValidator } from "@hono/zod-validator";
 import { assetSchema, type NewAsset } from "./validation";
-import { createAsset, getAllAssets } from "./services";
+import { createAsset, deleteAsset, getAllAssets } from "./services";
 
 const assets = new Hono();
 
@@ -36,5 +36,18 @@ assets.post("/",
         return c.json({ success: true, message: "Asset created successfully", data: result }, 201);    
     }
 );
+
+assets.delete("/:id", async (c) => {
+    const id = Number(c.req.param("id"));
+    if (isNaN(id)) {
+        return c.json({ 
+            success: false,
+            error: "INVALID_ID",
+            message: "The provided ID is not a valid number."
+        }, 400);
+    }
+    const deletedAsset = await deleteAsset(id);
+    return c.json({ success: true, message: "Asset deleted successfully", data: deletedAsset });
+});
 
 export default assets;

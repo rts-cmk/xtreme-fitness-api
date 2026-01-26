@@ -2,12 +2,12 @@ import { Hono } from "hono";
 import { z } from "zod"; // <-- needed to detect ZodError
 import { zValidator } from "@hono/zod-validator";
 import { NewReview, reviewSchema } from "./validation";
-import { getAllTestimonials, createTestimonial } from "./services";
+import { getAllReviews, createReview } from "./services";
 
 const reviews = new Hono();
 
 reviews.get("/", async (c) => {
-    const reviewsList = await getAllTestimonials();
+    const reviewsList = await getAllReviews();
     return c.json({ success: true, data: reviewsList });
 });
 
@@ -19,14 +19,14 @@ reviews.post("/",
             return c.json({
                 success: false,
                 error: "VALIDATION ERROR",
-                message: "Invalid testimonial payload",
+                message: "Invalid review payload",
                 data: errorTree
             }, 400);
         }
     }),
     async (c) => {
         const body: NewReview = await c.req.valid("json");
-        const result = await createTestimonial(body);
+        const result = await createReview(body);
         return c.json({ success: true, data: result }, 201);
     } 
 );

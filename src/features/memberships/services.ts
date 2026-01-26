@@ -4,11 +4,16 @@ import type { NewMembership } from "./validation";
 export async function createMembership(data: NewMembership) {
     return prisma.membership.create({ data } );
   }
+
+  export async function updateMembership(id: number, data: NewMembership) {
+    return prisma.membership.update({ where: { id }, data } );
+  }
   
   export async function getAllMemberships() {
   return prisma.membership.findMany({
     include: {
-      asset: true,
+      asset: { omit: { id: true, createdAt: true} },
+      advantages: { omit: { id: true, createdAt: true, membershipId: true}, },
     },
     omit: { assetId: true },
   });
