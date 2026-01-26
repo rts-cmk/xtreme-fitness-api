@@ -55,6 +55,8 @@ model Membership {
   price      Float
   content    String
   advantages Advantage[]
+  assetId    Int?        @unique
+  asset      Image?      @relation("membershipImage", fields: [assetId], references: [id])
   createdAt  DateTime    @default(now())
 }
 
@@ -124,17 +126,18 @@ model Subscriber {
 }
 
 model Image {
-  id        Int        @id @default(autoincrement())
-  url       String
-  altText   String
-  width     Int
-  height    Int
-  createdAt DateTime   @default(now())
-  benefit   Benefit?   @relation("benefitImage")
-  service   Service?   @relation("serviceImage")
-  employee  Employee?  @relation("employeeImage")
-  post      Post?      @relation("postImage")
-  excercise Excercise? @relation("excerciseImage")
+  id         Int         @id @default(autoincrement())
+  url        String
+  altText    String
+  width      Int
+  height     Int
+  createdAt  DateTime    @default(now())
+  benefit    Benefit?    @relation("benefitImage")
+  service    Service?    @relation("serviceImage")
+  employee   Employee?   @relation("employeeImage")
+  post       Post?       @relation("postImage")
+  excercise  Excercise?  @relation("excerciseImage")
+  membership Membership? @relation("membershipImage")
 }
 
 model Icon {
