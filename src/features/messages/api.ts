@@ -20,7 +20,7 @@ messages.post("/",
         }
     }),
     async (c) => {
-        const body: NewMessage = await c.req.valid("json");
+        const body: NewMessage = c.req.valid("json");
         const result = await createMessage(body);
         return c.json({ success: true,
             message: "Message created",
