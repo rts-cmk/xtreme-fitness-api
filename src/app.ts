@@ -12,6 +12,7 @@ import advantages from "./features/advantages/api";
 import messages from "./features/messages/api";
 import employees from "./features/employees/api";
 import exercises from "./features/exercises/api";
+import workouts from "./features/workouts/api";
 
 // error handling middleware
 import { errorHandler } from "./middleware/errorHandler";
@@ -34,5 +35,6 @@ app.route("/advantages", advantages);
 app.route("/messages", messages);
 app.route("/employees", employees);
 app.route("/exercises", exercises);
+app.route("/workouts", workouts);
 
 export default app;
