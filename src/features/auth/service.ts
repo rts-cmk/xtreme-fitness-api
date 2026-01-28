@@ -5,9 +5,10 @@ import { sign } from "hono/jwt";
 
 
     export async function createUser (userData: NewUser) {
-        const prismaData: Prisma.UserCreateInput = {
+        const prismaData = {
             name: userData.name,
             email: userData.email,
+            membershipId: userData.membershipId,
             password: hashSync(userData.password, 15)
         }
         const user = await prisma.user.create({ data:prismaData });
