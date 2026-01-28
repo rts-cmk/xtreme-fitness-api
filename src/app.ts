@@ -14,6 +14,8 @@ import employees from "./features/employees/api";
 import exercises from "./features/exercises/api";
 import workouts from "./features/workouts/api";
 import subscribers from "./features/subscribers/api";
+import auth from "./features/auth/api";
+import users from "./features/users/api";
 
 // error handling middleware
 import { errorHandler } from "./middleware/errorHandler";
@@ -26,6 +28,8 @@ app.use("*", errorHandler);
 app.use("/", serveStatic({ root: "./public" }));
 app.use("/file-bucket/*", serveStatic({ root: "./public" }));
 
+app.route("/auth", auth);
+app.route("/users", users);
 app.route("/assets", assets);
 app.route("/benefits", benefits);
 app.route("/services", services);
