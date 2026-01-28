@@ -11,13 +11,16 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String   @unique
-  role      String   @default("member")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               Int         @id @default(autoincrement())
+  name             String
+  email            String      @unique
+  password         String      @unique
+  role             String      @default("member")
+  membershipId     Int?
+  membership       Membership? @relation(fields: [membershipId], references: [id])
+  enrolledWorkouts Workout[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 }
 
 model Review {
@@ -58,6 +61,7 @@ model Membership {
   assetId    Int?        @unique
   asset      Image?      @relation("membershipImage", fields: [assetId], references: [id])
   createdAt  DateTime    @default(now())
+  users      User[]
 }
 
 model Advantage {
@@ -117,6 +121,7 @@ model Workout {
   time      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  users     User[]
 }
 
 model Subscriber {
