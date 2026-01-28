@@ -16,7 +16,12 @@ export async function createExercise (data: NewExercise) {
   }
 
   export async function getAllExercises() {
-    return prisma.excercise.findMany();
+    return prisma.excercise.findMany({
+      include: {
+        asset: { omit: { id: true, createdAt: true} },
+      },
+      omit: { assetId: true },
+    });
   }
 
   export async function getExerciseById(id: number) {
