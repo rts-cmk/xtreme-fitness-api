@@ -16,6 +16,8 @@ import workouts from "./features/workouts/api";
 import subscribers from "./features/subscribers/api";
 import auth from "./features/auth/api";
 import users from "./features/users/api";
+import posts from "./features/posts/api";
+import comments from "./features/comments/api";
 
 // error handling middleware
 import { errorHandler } from "./middleware/errorHandler";
@@ -42,5 +44,7 @@ app.route("/employees", employees);
 app.route("/exercises", exercises);
 app.route("/workouts", workouts);
 app.route("/subscribers", subscribers);
+app.route("/posts", posts);
+app.route("/comments", comments);
 
 export default app;
