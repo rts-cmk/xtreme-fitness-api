@@ -19,6 +19,7 @@ model User {
   membershipId     Int?
   membership       Membership? @relation(fields: [membershipId], references: [id])
   enrolledWorkouts Workout[]
+  comments         Comment[]
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 }
@@ -92,15 +93,28 @@ model Employee {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   teaser    String
   content   String
-  author    String   @default("Admin")
-  assetId   Int?     @unique
+  author    String    @default("Admin")
+  assetId   Int?      @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  asset     Image?    @relation("postImage", fields: [assetId], references: [id])
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  name      String
+  email     String
+  content   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  asset     Image?   @relation("postImage", fields: [assetId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
 }
 
 model Excercise {
