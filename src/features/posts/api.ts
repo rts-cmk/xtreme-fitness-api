@@ -2,8 +2,8 @@
 import { Hono } from "hono";
 import { z, ZodError, treeifyError, success } from "zod"; // <-- needed to detect ZodError
 import { zValidator } from "@hono/zod-validator";
-import { postSchema, type NewPost } from "./validation";
-import { getAllPosts, getPostById, createPost,  updatePost, deletePost } from "./services";
+import { commentSchema, NewComment, postSchema, type NewPost } from "./validation";
+import { getAllPosts, getPostById, createPost,  updatePost, deletePost, addCommentToPost } from "./services";
 import { jwt } from 'hono/jwt'
 
 const posts = new Hono();
@@ -75,6 +75,41 @@ posts.delete("/:id", async (c) => {
         await deletePost(Number(id));
         return c.json({ success: true, message: "Post deleted" }, 200);
  
+});
+
+
+
+posts.post("/:postId/comments", 
+  jwt({ secret: process.env.JWT_SECRET as string,
+      alg: 'HS256'
+   }),
+
+  zValidator("json", commentSchema, (result, c) => {
+    if (!result.success) {
+          const validationError = result.error as ZodError<NewComment>
+          const errorTree = treeifyError(validationError)
+          return c.json({ 
+            success: false,
+            error: "VALIDATION ERROR",
+            message: "Invalidt comment payload",
+            data: errorTree
+           }, 400);
+        }
+  }), 
+    async (c) => {
+    const payload = c.get("jwtPayload");
+    if (!payload) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+    const userId = Number(payload.id);
+    const postId = Number(c.req.param("postId"));
+    const body: NewComment = await c.req.valid("json");
+    const comment = await addCommentToPost(postId, userId, body);
+    return c.json({
+      success: true,
+      message: "Comment added to blogpost",
+      data: comment
+    }, 201);
 });
 
 export default posts;
