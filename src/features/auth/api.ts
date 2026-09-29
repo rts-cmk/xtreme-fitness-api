@@ -7,7 +7,7 @@ import { zValidator } from "@hono/zod-validator";
 const auth = new Hono();
 
 auth.post("/register", 
-    zValidator("json", userSchema.pick({ name: true, email: true, password: true }), (result, c) => {
+    zValidator("json", userSchema.pick({ name: true, email: true, membershipId: true, password: true }), (result, c) => {
         if (!result.success) {
             return c.json({ error: result.error }, 400);
         }
